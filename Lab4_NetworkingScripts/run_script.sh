@@ -38,7 +38,8 @@ docker run -itd --name T1 -p 8080:80 alpine sh
 docker exec T1 ip addr
 
 # Uruchomienie kontenera „T2” opartego o obraz nginx i podpięcie do sieci bridge1 z mapowaniem portu 80 na port hosta
-docker run -itd --name T2 --network bridge1 --expose 80 - 80:80 nginx sh
+#docker run -itd --name T2 --network bridge1 --expose 80 - 80:80 nginx 
+docker run -itd --name T2 --network bridge1 -p 80:80 nginx
 docker inspect T2 | jq '.[].NetworkSettings'
 
 # Uruchomienie kontenerów „D1” i „D2” opartych odpowiednio o obrazy alpine i httpd, przyłączenie do sieci bridge1 i bridge2
@@ -79,6 +80,8 @@ fi
 
 ## Dla T2 opartego o Debian lub Alpine
 docker exec T2 sh -c 'if ! command -v route &> /dev/null; then apk update && apk add iproute2; fi; route -n'
+
+docker exec T2 bash -c 'if ! command -v route &> /dev/null; then apt-get update && apt-get install -y net-tools; fi; route -n'
 
 
 ## Dla D2 opartego o Debian
