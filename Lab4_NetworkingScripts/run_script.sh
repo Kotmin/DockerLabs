@@ -43,13 +43,17 @@ docker run -itd --name T2 --network bridge1 -p 80:80 nginx
 docker inspect T2 | jq '.[].NetworkSettings'
 
 # Uruchomienie kontenerów „D1” i „D2” opartych odpowiednio o obrazy alpine i httpd, przyłączenie do sieci bridge1 i bridge2
-docker run -d --name D1 --network bridge1 --ip 10.0.10.254 alpine
+docker run -dit --name D1 --network bridge1 --ip 10.0.10.254 alpine sh
+docker network connect --alias host1 bridge1 D1
+docker exec D1 /bin/sh -c "apk update && apk add iputils"
+
+
 docker inspect D1 | jq '.[].NetworkSettings'
 
 # D2 bezpośredni dostęp do int hosta macierzystego, p 80 na 8000 hosta
 docker run -d --name D2 --expose 80 -p 8000:80 httpd
-docker network connect bridge1 D2
-docker network connect bridge2 D2
+docker network connect --alias apa1 bridge1 D2
+docker network connect --alias apa2 bridge2 D2
 docker network disconnect bridge D2
 
 docker inspect D2 | jq '.[].NetworkSettings'
@@ -57,6 +61,7 @@ docker inspect D2 | jq '.[].NetworkSettings'
 
 # Uruchomienie kontenera „S1” na bazie obrazu zubuntu i przyłączenie do sieci bridge2
 docker run -itd --name S1 --network bridge2 ubuntu
+docker network connect --alias host2 bridge2 S1
 docker inspect S1 | jq '.[].NetworkSettings'
 
 # Tworzenie kontenera „late” na bazie obrazu zubuntu bez uruchamiania, przyłączenie do obu sieci, a następnie uruchomienie
@@ -86,7 +91,7 @@ docker exec T2 bash -c 'if ! command -v route &> /dev/null; then apt-get update 
 
 ## Dla D2 opartego o Debian
 
-docker exec D2 bash -c 'if ! command -v route &> /dev/null; then apt-get update && apt-get install -y net-tools; fi; route -n'
+docker exec D2 bash -c 'if ! command -v route &> /dev/null; then apt-get update && apt-get install -y net-tools; fi; route -n '
 
 
 
