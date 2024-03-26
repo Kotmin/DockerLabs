@@ -25,7 +25,7 @@ docker exec -it hadoop-custom-container bash
 # Wewnątrz kontenera
 cd $HADOOP_HOME
 hadoop fs -copyFromLocal ./input.txt /input.txt
-time hadoop jar wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input.txt /output
+hadoop jar wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input.txt /output
 
 exit
 
