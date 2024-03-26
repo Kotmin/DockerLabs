@@ -21,18 +21,29 @@ docker stats hadoop-custom-container hadoop-dockerhub-container
 
 # Uruchomienie
 
-docker exec -it hadoop-custom-container bash
-# Wewnątrz kontenera
-cd $HADOOP_HOME
-hadoop fs -copyFromLocal ./input.txt /input.txt
-hadoop jar wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input.txt /output
+time docker exec hadoop-custom-container /bin/bash -c "\
+    $HADOOP_HOME/bin/hadoop fs -mkdir -p /input && \
+    $HADOOP_HOME/bin/hadoop fs -copyFromLocal /usr/local/hadoop/input.txt /input/input.txt && \
+    $HADOOP_HOME/bin/hadoop jar /usr/local/hadoop/wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input /output"
 
-exit
+# Uruchomienie zadania Hadoop w kontenerze z DockerHub'a
+time docker exec hadoop-dockerhub-container /bin/bash -c "\
+    /usr/local/hadoop/bin/hadoop fs -mkdir -p /input && \
+    /usr/local/hadoop/bin/hadoop fs -copyFromLocal /usr/local/hadoop/input.txt /input/input.txt && \
+    /usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input /output"
 
-docker exec -it hadoop-dockerhub-container bash
-# Wewnątrz kontenera
-cd $HADOOP_HOME
-hadoop fs -copyFromLocal ./input.txt /input.txt
-hadoop jar wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input.txt /output
+#docker exec -it hadoop-custom-container bash
+## Wewnątrz kontenera
+#cd $HADOOP_HOME
+#hadoop fs -copyFromLocal ./input.txt /input.txt
+#hadoop jar wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input.txt /output
 
-exit
+#exit
+
+#docker exec -it hadoop-dockerhub-container bash
+## Wewnątrz kontenera
+#cd $HADOOP_HOME
+#hadoop fs -copyFromLocal ./input.txt /input.txt
+#hadoop jar wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar WordCount /input.txt /output
+
+#exit

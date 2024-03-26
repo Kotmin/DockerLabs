@@ -18,7 +18,8 @@ RUN su hduser -c "ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa" && \
     su hduser -c "cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
 
 # Pobieranie i instalacja Hadoopa
-ENV HADOOP_VERSION 3.3.1
+#ENV HADOOP_VERSION 3.3.1
+ENV HADOOP_VERSION 3.4.0
 ENV HADOOP_HOME /usr/local/hadoop
 ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
