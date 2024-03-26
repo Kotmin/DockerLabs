@@ -36,6 +36,11 @@ COPY core-site.xml $HADOOP_HOME/etc/hadoop/
 COPY hdfs-site.xml $HADOOP_HOME/etc/hadoop/
 COPY mapred-site.xml $HADOOP_HOME/etc/hadoop/:
 
+#Skopiowanie pliku z aplikacją WordCount do kontenera
+
+COPY wordcount-1.0-SNAPSHOT-jar-with-dependencies.jar $HADOOP_HOME/
+
+
 # Start Hadoop przy uruchomieniu kontenera (można skonfigurować własne skrypty startowe)
 CMD ["sh", "-c", "service ssh start; bash"]
 
